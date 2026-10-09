@@ -163,7 +163,7 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}
 <label for="e">Email *</label><input id="e" type="email" autocomplete="email">
 <label for="p">Phone</label><input id="p" type="tel" autocomplete="tel">
 <label for="a">Property address *</label><input id="a">
-<label for="d">Preferred date</label><input id="d" type="date">
+<label for="d">Preferred date</label><input id="d" type="date" style="cursor:pointer;min-height:42px"><div class="note" style="margin:4px 0 0">Click the box to pick a date. We confirm the exact time with you.</div>
 <label for="o">Notes (access, lockbox, carriage house…)</label><textarea id="o" rows="3"></textarea>
 <div class="err" id="err"></div>
 <button class="btn full" type="submit">Send order</button>
@@ -223,7 +223,10 @@ function upd(){var L=lines(),t=0;L.forEach(function(l){t+=l.amt});
 $("sum").innerHTML=L.length?L.map(function(l){return"<li><span>"+l.label+"</span><b>"+l.txt+"</b></li>"}).join("")+(SAVE>0?'<li style="color:#15803d"><span>Bundle savings</span><b>-$'+SAVE.toFixed(2)+'</b></li>':""):'<li style="color:var(--muted)">Nothing added yet</li>';
 $("bh").textContent=bk().length===1?"Add another of Photos, Video or Drone to save 10% with a bundle.":"";
 $("tot").textContent="$"+t.toFixed(2).replace(".00","");$("cnt").textContent="("+Object.keys(C).length+")"}
-function openOrder(id){$("ov").classList.add("open");$("dr").style.visibility="hidden";document.body.style.overflow="hidden";if(id&&!C[id])tog(id);upd()}
+function setMinDate(){var t=new Date(),m=t.getFullYear()+"-"+("0"+(t.getMonth()+1)).slice(-2)+"-"+("0"+t.getDate()).slice(-2);$("d").min=m}
+$("d").addEventListener("click",function(){try{if(this.showPicker)this.showPicker()}catch(x){}});
+$("d").addEventListener("focus",function(){try{if(this.showPicker)this.showPicker()}catch(x){}});
+function openOrder(id){setMinDate();$("ov").classList.add("open");$("dr").style.visibility="hidden";document.body.style.overflow="hidden";if(id&&!C[id])tog(id);upd()}
 function closeOrder(){$("ov").classList.remove("open");$("dr").style.visibility="";document.body.style.overflow=""}
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeOrder()});
 function orderText(){var L=lines(),t=0;L.forEach(function(l){t+=l.amt});
