@@ -130,7 +130,7 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}
 <div class="grid" id="cards"></div>
 </div></section>
 
-<section id="bundles" style="padding-top:0"><div class="wrap"><h2>Bundle and save</h2><p class="sub">Order two or more of Photos, Drone and Walkthrough Video and save 10%, applied automatically.</p><div class="grid" id="bcards"></div></div></section>
+<section id="bundles" style="padding-top:0"><div class="wrap"><h2>Bundle and save</h2><p class="sub">Order two or more of Photos, Drone and Walkthrough Video and save 10% to 16%, applied automatically. The more you bundle, the more you save.</p><div class="grid" id="bcards"></div></div></section>
 <section id="how" style="padding-top:0"><div class="wrap">
 <h2>How it works</h2><p class="sub">Three steps from booking to launch.</p>
 <div class="steps">
@@ -199,7 +199,7 @@ var BG={"photo": "kitchen", "video": "stairs", "meas": "living", "drone": "drone
 function pl(s){return s.pl||("$"+s.p)}
 $("yr").textContent=new Date().getFullYear();
 $("cards").innerHTML=S.map(function(s){return '<div class="card ph bg-'+BG[s.id]+(s.id==="dphoto"?' bg-drone2':'')+'"><div class="ico">'+s.ic+'</div><h3>'+s.n+'</h3><div class="price">'+pl(s)+'</div><p>'+s.d+'</p><button class="btn" onclick="openOrder(\''+s.id+'\')">Add to order</button></div>'}).join("");
-$("list").innerHTML='<div class="row on" style="margin-bottom:14px"><b>Bundle and save</b><small style="color:var(--muted);display:block;font-size:13px;margin-top:4px">Order any two or more of Photos, Drone and Walkthrough Video and save 10%. Applied automatically.</small></div>'+S.map(function(s){
+$("list").innerHTML='<div class="row on" style="margin-bottom:14px"><b>Bundle and save</b><small style="color:var(--muted);display:block;font-size:13px;margin-top:4px">Photos + Video 10% off. Photos + Drone 12% off. Drone + Video 14% off. All three 16% off. Applied automatically.</small></div>'+S.map(function(s){
 var o="";
 if(s.t==="qty")o='<input type="number" min="1" value="1" data-k="qty" aria-label="Number of photos" placeholder="# of photos">';
 if(s.t==="dphoto")o='<input type="number" min="3" max="30" value="3" data-k="qty" aria-label="Number of drone photos" placeholder="# of photos">';
@@ -214,14 +214,14 @@ if(s.t==="dphoto"){var n=Math.min(30,Math.max(3,Math.round(+c.qty||3))),a=Math.m
 if(s.t==="qty"){var q=Math.max(1,+c.qty||1);return{label:s.n+" × "+q+" photo"+(q>1?"s":""),amt:q*s.p,txt:"$"+q*s.p}}
 if(s.t==="quote")return{label:s.n+" (quote)",amt:s.p,txt:"from $"+s.p};
 return{label:s.n,amt:s.p,txt:"$"+s.p}}
-var SAVE=0,BP={"photo+video":"Photos & Video Walkthrough","photo+drone":"Photos & Drone Video","video+drone":"Drone & Walkthrough Video","photo+video+drone":"Photos, Drone & Walkthrough Video"};
+var SAVE=0,BP={"photo+video":["Photos & Video Walkthrough",10],"photo+drone":["Photos & Drone Video",12],"video+drone":["Drone & Walkthrough Video",14],"photo+video+drone":["Photos, Drone & Walkthrough Video",16]};
 function bk(){return["photo","video","drone"].filter(function(i){return C[i]})}
 function lines(){var k=bk(),b=BP[k.join("+")],out=[];SAVE=0;
-if(b){var reg=0;k.forEach(function(i){reg+=S.filter(function(x){return x.id===i})[0].p});var amt=Math.round(reg*90)/100;SAVE=Math.round((reg-amt)*100)/100;out.push({label:"Bundle (10% off): "+b,amt:amt,txt:"$"+amt.toFixed(2)})}
+if(b){var reg=0;k.forEach(function(i){reg+=S.filter(function(x){return x.id===i})[0].p});var amt=Math.round(reg*(100-b[1]))/100;SAVE=Math.round((reg-amt)*100)/100;out.push({label:"Bundle ("+b[1]+"% off): "+b[0],amt:amt,txt:"$"+amt.toFixed(2)})}
 S.forEach(function(s){if(!C[s.id]||(b&&k.indexOf(s.id)>-1))return;out.push(line(s,C[s.id]))});return out}
 function upd(){var L=lines(),t=0;L.forEach(function(l){t+=l.amt});
 $("sum").innerHTML=L.length?L.map(function(l){return"<li><span>"+l.label+"</span><b>"+l.txt+"</b></li>"}).join("")+(SAVE>0?'<li style="color:#15803d"><span>Bundle savings</span><b>-$'+SAVE.toFixed(2)+'</b></li>':""):'<li style="color:var(--muted)">Nothing added yet</li>';
-$("bh").textContent=bk().length===1?"Add another of Photos, Video or Drone to save 10% with a bundle.":"";
+$("bh").textContent=bk().length===1?"Add another of Photos, Video or Drone to save with a bundle (10% to 16% off).":"";
 $("tot").textContent="$"+t.toFixed(2).replace(".00","");$("cnt").textContent="("+Object.keys(C).length+")"}
 function setMinDate(){var t=new Date(),m=t.getFullYear()+"-"+("0"+(t.getMonth()+1)).slice(-2)+"-"+("0"+t.getDate()).slice(-2);$("d").min=m}
 $("d").addEventListener("click",function(){try{if(this.showPicker)this.showPicker()}catch(x){}});
@@ -255,8 +255,8 @@ try{navigator.clipboard.writeText(t).then(ok,function(){fb()})}catch(x){fb()}
 function fb(){var a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();try{document.execCommand("copy");ok()}catch(x){}a.remove()}}
 function resetOrder(){C={};document.querySelectorAll(".row").forEach(function(r){r.classList.remove("on");r.querySelector(".add").textContent="Add"});$("f").reset();$("f").style.display="";$("done").classList.remove("show");$("cp").textContent="Copy order text";$("mail").style.display="none";$("cp").style.display="none";upd()}
 upd();
-var BL=[[["photo","video"],286.2,318,"Photos & Video Walkthrough","Edited photos and a full HD walkthrough video. About 30–50 photos and a 1–3 minute video."],[["photo","drone"],341.1,379,"Photos & Drone Video","Edited photos and an HD drone video, plus MLS-ready drone photos."],[["video","drone"],395.1,439,"Drone & Walkthrough Video","One HD video with drone exterior and walkthrough, plus MLS-ready drone photos."],[["photo","video","drone"],511.2,568,"Photos, Drone & Walkthrough Video","Edited photos and one HD video with drone exterior and walkthrough, plus MLS-ready drone photos."]];
-$("bcards").innerHTML=BL.map(function(b,i){return'<div class="card"><h3>'+b[3]+'</h3><div class="price">$'+b[1].toFixed(2)+' <s style="color:var(--muted);font-weight:500">$'+b[2]+'</s> Save $'+(b[2]-b[1]).toFixed(2)+' (10% off)</div><p>'+b[4]+'</p><button class="btn" onclick="ob('+i+')">Order this bundle</button></div>'}).join("");
+var BL=[[["photo","video"],286.2,318,10,"Photos & Video Walkthrough","Edited photos and a full HD walkthrough video. About 30–50 photos and a 1–3 minute video."],[["photo","drone"],333.52,379,12,"Photos & Drone Video","Edited photos and an HD drone video, plus MLS-ready drone photos."],[["video","drone"],377.54,439,14,"Drone & Walkthrough Video","One HD video with drone exterior and walkthrough, plus MLS-ready drone photos."],[["photo","video","drone"],477.12,568,16,"Photos, Drone & Walkthrough Video","Edited photos and one HD video with drone exterior and walkthrough, plus MLS-ready drone photos."]];
+$("bcards").innerHTML=BL.map(function(b,i){return'<div class="card"><h3>'+b[4]+'</h3><div class="price">$'+b[1].toFixed(2)+' <s style="color:var(--muted);font-weight:500">$'+b[2]+'</s> Save $'+(b[2]-b[1]).toFixed(2)+' ('+b[3]+'% off)</div><p>'+b[5]+'</p><button class="btn" onclick="ob('+i+')">Order this bundle</button></div>'}).join("");
 function ob(i){BL[i][0].forEach(function(id){if(!C[id])tog(id)});openOrder()}
 var hv=$("hv");if(hv&&matchMedia("(prefers-reduced-motion: reduce)").matches){hv.removeAttribute("autoplay");hv.pause()}
 (function(){var d=$("dr"),t=d.querySelector(".tilt"),x=-90,y=innerHeight*.3;
