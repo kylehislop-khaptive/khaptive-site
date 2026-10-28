@@ -113,6 +113,10 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0b1b33">
+<link rel="manifest" href="/manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Khaptive">
 </head>
 <body>
 <header><div class="wrap nav">
@@ -125,7 +129,7 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}
 <div class="eyebrow">Real estate marketing</div>
 <h1>Listings that <em>stop the scroll.</em></h1>
 <p>Photography, video, floor plans, drone, iGuide 3D tours and agent branding. Flat, simple pricing so you can order in minutes.</p>
-<div class="cta"><button class="btn" onclick="openOrder()">Start an order</button><a class="btn ghost" href="#services">See services</a></div>
+<div class="cta"><button class="btn" onclick="openOrder()">Start an order</button><a class="btn ghost" href="#services">See services</a><button class="btn ghost" id="inst" style="display:none" type="button">Install order app</button></div>
 <div class="chips"><span>📸 30–50 photos</span><span>🎬 2–4 min video</span><span>📐 Floor plans</span><span>🚁 Drone</span><span>🧭 iGuide 3D</span></div>
 </div></div>
 
@@ -151,6 +155,7 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}
 </div></div></section>
 <footer><div class="wrap">© <span id="yr"></span> Khaptive Design · Real estate photography, video and measurements</div></footer>
 
+<div class="ov" id="ios" onclick="if(event.target===this)this.classList.remove('open')"><div class="modal" style="width:min(440px,100%)" role="dialog" aria-modal="true" aria-label="Add to home screen"><div class="mh"><h3>Add to your home screen</h3><button class="x" type="button" onclick="document.getElementById('ios').classList.remove('open')" aria-label="Close">×</button></div><div class="col"><ol style="margin:0;padding-left:20px;line-height:1.9"><li>Open this page in <b>Safari</b>.</li><li>Tap the <b>Share</b> button (the square with an arrow pointing up).</li><li>Scroll down and tap <b>Add to Home Screen</b>.</li><li>Tap <b>Add</b>. The Khaptive icon now opens the order screen.</li></ol></div></div></div>
 <div class="ov" id="ov" onclick="if(event.target===this)closeOrder()">
 <div class="modal" role="dialog" aria-modal="true" aria-label="Order services">
 <div class="mh"><h3>Build your order</h3><button class="x" onclick="closeOrder()" aria-label="Close">×</button></div>
@@ -264,6 +269,16 @@ var BL=[[["photo","video"],286.2,318,10,"Photos & Video Walkthrough","Edited pho
 $("bcards").innerHTML=BL.map(function(b,i){return'<div class="card"><h3>'+b[4]+'</h3><div class="price">$'+b[1].toFixed(2)+' <s style="color:var(--muted);font-weight:500">$'+b[2]+'</s> Save $'+(b[2]-b[1]).toFixed(2)+' ('+b[3]+'% off)</div><p>'+b[5]+'</p><button class="btn" onclick="ob('+i+')">Order this bundle</button></div>'}).join("");
 function ob(i){BL[i][0].forEach(function(id){if(!C[id])tog(id)});openOrder()}
 var hv=$("hv");if(hv&&matchMedia("(prefers-reduced-motion: reduce)").matches){hv.removeAttribute("autoplay");hv.pause()}
+var dp=null;
+function isStandalone(){return (window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true}
+function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)}
+function showInstall(){if(!isStandalone())$("inst").style.display=""}
+window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();dp=e;showInstall()});
+window.addEventListener("appinstalled",function(){dp=null;$("inst").style.display="none"});
+if(isIOS())showInstall();
+$("inst").addEventListener("click",function(){if(dp){dp.prompt();dp.userChoice.then(function(){dp=null;$("inst").style.display="none"})}else if(isIOS()){$("ios").classList.add("open")}});
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})})}
+if(/[?&]order=1/.test(location.search))setTimeout(function(){openOrder()},400);
 (function(){var d=$("dr"),t=d.querySelector(".tilt"),x=-90,y=innerHeight*.3;
 if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
 function pos(a,b){d.style.transform="translate("+a+"px,"+b+"px)"}
