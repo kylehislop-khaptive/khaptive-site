@@ -203,7 +203,7 @@ $("list").innerHTML='<div class="row on" style="margin-bottom:14px"><b>Bundle an
 var o="";
 if(s.t==="qty")o='<input type="number" min="1" value="1" data-k="qty" aria-label="Number of photos" placeholder="# of photos">';
 if(s.t==="dphoto")o='<input type="number" min="3" max="30" value="3" data-k="qty" aria-label="Number of drone photos" placeholder="# of photos">';
-if(s.t==="meas")o='<select data-k="tier" aria-label="Floor plan type"><option value="basic">Basic (8.5¢/sqft)</option><option value="detail">Detailed (10.5¢/sqft)</option></select><input type="number" min="0" data-k="sqft" placeholder="Square feet" aria-label="Square feet">';
+if(s.t==="meas")o='<select data-k="tier" aria-label="Floor plan type"><option value="basic">Basic (8.5¢/sqft)</option><option value="detail">Detailed (10.5¢/sqft)</option></select><input type="number" min="0" data-k="sqft" placeholder="Est. Square Feet" aria-label="Est. Square Feet">';
 return '<div class="row" id="r-'+s.id+'"><div class="rt"><div><b>'+s.ic+' '+s.n+'</b> <span class="price">'+pl(s)+'</span><small>'+s.d+'</small></div><button type="button" class="add" onclick="tog(\''+s.id+'\')">Add</button></div><div class="opts">'+o+'</div></div>'}).join("");
 $("list").addEventListener("input",function(e){var r=e.target.closest(".row");if(!r)return;var id=r.id.slice(2);if(C[id]&&e.target.dataset.k){C[id][e.target.dataset.k]=e.target.value;upd()}});
 function tog(id,force){var r=$("r-"+id);if(C[id]&&!force){delete C[id];r.classList.remove("on");r.querySelector(".add").textContent="Add"}else if(!C[id]){C[id]={qty:1,tier:"basic",sqft:""};r.querySelectorAll("[data-k]").forEach(function(i){if(i.value!=="")C[id][i.dataset.k]=i.value});r.classList.add("on");r.querySelector(".add").textContent="Added ✓"}upd()}
